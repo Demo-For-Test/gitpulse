@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitPulse - Interactive GitHub Contribution Graph & Analytics</title>
+  <meta name="description" content="An interactive GitHub contribution calendar visualization and analytics dashboard. Track streaks, averages, and detailed day/month activity breakdowns.">
+  
+  <!-- Import Outfit and Fira Code fonts for a premium tech look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-green">
+  
+  <div class="background-decorations">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+  </div>
+
+  <div class="dashboard-wrapper">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <i class="fa-brands fa-github-alt"></i>
+        </div>
+        <div class="logo-text">
+          <h1>Git<span class="highlight">Pulse</span></h1>
+          <span class="subtitle">Contribution Analyzer & Grid</span>
+        </div>
+      </div>
+
+      <!-- Theme Selector -->
+      <div class="theme-customizer">
+        <span class="theme-label"><i class="fa-solid fa-palette"></i> Palette:</span>
+        <div class="theme-options">
+          <button class="theme-btn btn-green active" data-theme="green" title="Classic Green" id="theme-btn-green"></button>
+          <button class="theme-btn btn-purple" data-theme="purple" title="Midnight Purple" id="theme-btn-purple"></button>
+          <button class="theme-btn btn-orange" data-theme="orange" title="Solar Orange" id="theme-btn-orange"></button>
+          <button class="theme-btn btn-blue" data-theme="blue" title="Ocean Blue" id="theme-btn-blue"></button>
+          <button class="theme-btn btn-mono" data-theme="mono" title="Carbon Mono" id="theme-btn-mono"></button>
+          <button class="theme-btn btn-glass" data-theme="glass" title="Glass B&W" id="theme-btn-glass"></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section card glass">
+      <form id="search-form" class="search-form">
+        <div class="input-group">
+          <i class="fa-solid fa-user search-icon"></i>
+          <input type="text" id="username-input" placeholder="Enter GitHub username (e.g. Demo-For-Test)" required autocomplete="off">
+          <button type="submit" id="search-submit-btn" class="submit-btn">
+            <span>Analyze Pulse</span>
+            <i class="fa-solid fa-bolt icon-bolt"></i>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Error Toast -->
+    <div id="error-message" class="error-container card glass hidden">
+      <i class="fa-solid fa-circle-exclamation error-icon"></i>
+      <span id="error-text">User not found or API limits reached. Please try again later.</span>
+    </div>
+
+    <!-- Main Dashboard Grid -->
+    <main id="dashboard-content" class="dashboard-content hidden">
+      
+      <!-- User Profile Header -->
+      <section class="profile-card card glass">
+        <div class="profile-layout">
+          <img id="user-avatar" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150" alt="GitHub User Avatar" class="user-avatar">
+          <div class="profile-details">
+            <h2 id="user-name">Mayur Pagote</h2>
+            <p class="profile-meta">
+              <a id="user-github-link" href="#" target="_blank" rel="noopener noreferrer">
+                <i class="fa-brands fa-github"></i> @<span id="user-username">Demo-For-Test</span>
+              </a>
+            </p>
+          </div>
+          <button id="share-profile-btn" class="share-btn" title="Share & Embed">
+            <i class="fa-solid fa-share-nodes"></i> Share & Embed
+          </button>
+          <div class="pulse-status-badge">
+            <span class="pulse-dot animate-pulse"></span>
+            <span>Pulse Active</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Contribution Grid Container -->
+      <section class="grid-section card glass">
+        <div class="grid-header">
+          <div class="grid-title">
+            <i class="fa-solid fa-calendar-days text-accent"></i>
+            <h3>Contribution Calendar</h3>
+          </div>
+          <!-- Year Selector -->
+          <div id="year-tabs" class="year-tabs">
+            <!-- Dynamically populated year tabs -->
+          </div>
+        </div>
+
+        <div class="grid-viewport-wrapper">
+          <!-- Calendar Core Grid Layout -->
+          <div class="calendar-container">
+            <!-- Day labels column (Mon, Wed, Fri) -->
+            <div class="day-labels">
+              <span></span>
+              <span>Mon</span>
+              <span></span>
+              <span>Wed</span>
+              <span></span>
+              <span>Fri</span>
+              <span></span>
+            </div>
+            
+            <div id="contributions-grid" class="contributions-grid-wrapper">
+              <!-- Dynamically filled with month-containers -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid Footer -->
+        <div class="grid-footer">
+          <div id="grid-activity-summary" class="activity-summary-text">
+            0 activities in selected year
+          </div>
+          <div class="grid-legend">
+            <span>Less</span>
+            <div class="legend-cells">
+              <div class="legend-cell level-0"></div>
+              <div class="legend-cell level-1"></div>
+              <div class="legend-cell level-2"></div>
+              <div class="legend-cell level-3"></div>
+              <div class="legend-cell level-4"></div>
+            </div>
+            <span>More</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Analytics Metrics Row -->
+      <section class="metrics-row">
+        <!-- Stat Card 1 -->
+        <div class="metric-card card glass hover-lift">
+          <div class="metric-icon green-glow">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-label">Total Contributions</span>
+            <h4 id="stat-total" class="metric-val">0</h4>
+            <span class="metric-trend" id="stat-total-period">Selected Year</span>
+          </div>
+        </div>
+        
+        <!-- Stat Card 2 -->
+        <div class="metric-card card glass hover-lift">
+          <div class="metric-icon purple-glow">
+            <i class="fa-solid fa-fire"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-label">Current Streak</span>
+            <h4 id="stat-current-streak" class="metric-val">0 days</h4>
+            <span class="metric-trend" id="stat-current-streak-range">No active streak</span>
+          </div>
+        </div>
+
+        <!-- Stat Card 3 -->
+        <div class="metric-card card glass hover-lift">
+          <div class="metric-icon orange-glow">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-label">Longest Streak</span>
+            <h4 id="stat-longest-streak" class="metric-val">0 days</h4>
+            <span class="metric-trend" id="stat-longest-streak-range">All-time record</span>
+          </div>
+        </div>
+
+        <!-- Stat Card 4 -->
+        <div class="metric-card card glass hover-lift">
+          <div class="metric-icon blue-glow">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-label">Active Days Ratio</span>
+            <h4 id="stat-active-ratio" class="metric-val">0%</h4>
+            <span class="metric-trend" id="stat-active-days-count">0 of 365 days</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- GitHub Pulse Stats Row -->
+      <section class="metrics-row github-stats-row">
+        <!-- PRs Accepted -->
+        <div class="metric-card card glass hover-lift">
+          <div class="metric-icon purple-glow">
+            <i class="fa-solid fa-code-pull-request"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-label">PRs Accepted</span>
+            <h4 id="stat-prs" class="metric-val">0</h4>
+            <span class="metric-trend">Merged pull requests</span>
+          </div>
+        </div>
+
+        <!-- Followers -->
+        <div class="metric-card card glass hover-lift">
+          <div class="metric-icon blue-glow">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-label">Followers</span>
+            <h4 id="stat-followers" class="metric-val">0</h4>
+            <span class="metric-trend">Community reach</span>
+          </div>
+        </div>
+
+        <!-- Public Repos -->
+        <div class="metric-card card glass hover-lift">
+          <div class="metric-icon green-glow">
+            <i class="fa-solid fa-book-bookmark"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-label">Public Repos</span>
+            <h4 id="stat-repos" class="metric-val">0</h4>
+            <span class="metric-trend">Public repositories</span>
+          </div>
+        </div>
+
+        <!-- Highest Starred Repo -->
+        <div class="metric-card card glass hover-lift top-repo-card">
+          <div class="metric-icon orange-glow">
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <div class="metric-info">
+            <span class="metric-label">Top Starred Repo</span>
+            <h4 id="stat-top-repo-name" class="metric-val top-repo-name">-</h4>
+            <span class="metric-trend top-repo-meta">
+              <span id="stat-top-repo-stars"><i class="fa-solid fa-star"></i> 0</span> &nbsp;•&nbsp; 
+              <span id="stat-top-repo-forks"><i class="fa-solid fa-code-fork"></i> 0</span>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analysis and Charts Section -->
+      <section class="analysis-section">
+        <!-- Weekly Analysis Bar Chart -->
+        <div class="chart-card card glass">
+          <div class="card-header">
+            <i class="fa-solid fa-chart-simple text-accent"></i>
+            <h3>Day of Week Activity</h3>
+          </div>
+          <div class="chart-container">
+            <div id="weekly-chart" class="bar-chart">
+              <!-- Dynamically populated SVG/HTML Bar Chart -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly Breakdown Analysis -->
+        <div class="chart-card card glass">
+          <div class="card-header">
+            <i class="fa-solid fa-chart-line text-accent"></i>
+            <h3>Monthly Contribution Weight</h3>
+          </div>
+          <div class="chart-container">
+            <div id="monthly-chart" class="bar-chart">
+              <!-- Dynamically populated SVG/HTML Bar Chart -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics Highlights Card -->
+        <div class="chart-card card glass highlights-card">
+          <div class="card-header">
+            <i class="fa-solid fa-lightbulb text-accent"></i>
+            <h3>Pulse Insights</h3>
+          </div>
+          <div class="insights-list">
+            <div class="insight-item">
+              <div class="insight-bullet bullet-avg"><i class="fa-solid fa-calculator"></i></div>
+              <div class="insight-details">
+                <span class="insight-title">Daily Average</span>
+                <span class="insight-desc" id="insight-daily-avg">0.00 contributions / day</span>
+              </div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-bullet bullet-peak"><i class="fa-solid fa-bolt"></i></div>
+              <div class="insight-details">
+                <span class="insight-title">Peak Activity</span>
+                <span class="insight-desc" id="insight-peak-day">0 contributions on -</span>
+              </div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-bullet bullet-consistency"><i class="fa-solid fa-square-poll-vertical"></i></div>
+              <div class="insight-details">
+                <span class="insight-title">Highest Consistency Month</span>
+                <span class="insight-desc" id="insight-consistency-month">No data available</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Skeleton Loader (displayed during loading state) -->
+    <div id="loader-content" class="loader-content hidden">
+      <div class="skeleton-profile card glass">
+        <div class="skeleton-avatar"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-line line-1"></div>
+          <div class="skeleton-line line-2"></div>
+        </div>
+      </div>
+      <div class="skeleton-grid card glass">
+        <div class="skeleton-line line-title"></div>
+        <div class="skeleton-calendar"></div>
+      </div>
+      <div class="skeleton-metrics">
+        <div class="skeleton-metric card glass"></div>
+        <div class="skeleton-metric card glass"></div>
+        <div class="skeleton-metric card glass"></div>
+        <div class="skeleton-metric card glass"></div>
+      </div>
+    </div>
+
+    <!-- Initial Welcome Splash -->
+    <div id="splash-content" class="splash-content card glass">
+      <div class="splash-graphics">
+        <div class="splash-grid-mockup">
+          <div class="mock-cell lvl-0"></div>
+          <div class="mock-cell lvl-1"></div>
+          <div class="mock-cell lvl-2"></div>
+          <div class="mock-cell lvl-3"></div>
+          <div class="mock-cell lvl-4"></div>
+          <div class="mock-cell lvl-2"></div>
+          <div class="mock-cell lvl-0"></div>
+        </div>
+      </div>
+      <h2>Discover Your GitHub Activity</h2>
+      <p>Enter your username above to fetch your contribution graph, analyze your streaks, examine your weekly patterns, and visualise your productivity.</p>
+    </div>
+
+  </div>
+
+  <!-- Custom Floating Tooltip -->
+  <div id="grid-tooltip" class="grid-tooltip hidden">
+    <div class="tooltip-content">
+      <span id="tooltip-count" class="tooltip-count">3 contributions</span>
+      <span class="tooltip-sep">on</span>
+      <span id="tooltip-date" class="tooltip-date">May 7, 2026</span>
+    </div>
+    <div class="tooltip-arrow"></div>
+  </div>
+
+  <!-- Footer Info -->
+  <footer class="app-footer">
+    <p>GitPulse dashboard built with vanilla web technologies. Data proxied safely from GitHub.</p>
+  </footer>
+
+  <!-- Share & Embed Modal -->
+  <div id="share-modal" class="modal-overlay hidden">
+    <div class="modal-container card glass">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-share-nodes text-accent"></i> Share & Embed</h3>
+        <button id="close-modal-btn" class="close-btn" aria-label="Close share modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-subtitle">Copy links or codes below to share or embed this contribution pulse.</p>
+        
+        <!-- Option 1: Share Link -->
+        <div class="embed-option">
+          <label for="share-url-input"><i class="fa-solid fa-link"></i> Shareable Dashboard URL</label>
+          <div class="copy-input-group">
+            <input type="text" id="share-url-input" readonly>
+            <button class="copy-btn" data-target="share-url-input" title="Copy to clipboard">
+              <span class="copy-btn-text">Copy</span>
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Option 2: Markdown Badge -->
+        <div class="embed-option">
+          <label for="readme-markdown-input"><i class="fa-brands fa-markdown"></i> GitHub README Badge (Markdown)</label>
+          <div class="copy-input-group">
+            <input type="text" id="readme-markdown-input" readonly>
+            <button class="copy-btn" data-target="readme-markdown-input" title="Copy to clipboard">
+              <span class="copy-btn-text">Copy</span>
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Option 3: Iframe Embed -->
+        <div class="embed-option">
+          <label for="iframe-code-input"><i class="fa-solid fa-code"></i> Website Embed (Iframe Code)</label>
+          <div class="copy-input-group">
+            <input type="text" id="iframe-code-input" readonly>
+            <button class="copy-btn" data-target="iframe-code-input" title="Copy to clipboard">
+              <span class="copy-btn-text">Copy</span>
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Script File -->
+  <script src="app.js"></script>
+</body>
+</html>
