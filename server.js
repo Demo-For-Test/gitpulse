@@ -245,6 +245,14 @@ const themes = {
   glass: {
     level0: '#12161a', level1: '#3a3a3a', level2: '#707070', level3: '#b0b0b0', level4: '#ffffff',
     text: '#b0b0b0', accent: '#ffffff', bg: '#030508'
+  },
+  white: {
+    level0: '#161b22', level1: '#30363d', level2: '#8b949e', level3: '#c9d1d9', level4: '#ffffff',
+    text: '#8b949e', accent: '#ffffff', bg: '#0d1117'
+  },
+  light: {
+    level0: '#ebedf0', level1: '#afb8c1', level2: '#6e7681', level3: '#30363d', level4: '#161b22',
+    text: '#57606a', accent: '#1f2328', bg: '#ffffff'
   }
 };
 

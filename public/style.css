@@ -96,6 +96,38 @@ body.theme-glass {
   --accent-gradient: linear-gradient(135deg, #adadad 0%, #ffffff 100%);
 }
 
+/* 7. High Contrast White Theme */
+body.theme-white {
+  --level-0: #161b22;
+  --level-1: #30363d;
+  --level-2: #8b949e;
+  --level-3: #c9d1d9;
+  --level-4: #ffffff;
+  --accent-color: #ffffff;
+  --accent-glow: rgba(255, 255, 255, 0.15);
+  --accent-gradient: linear-gradient(135deg, #8b949e 0%, #ffffff 100%);
+}
+
+/* 8. Grayscale Light Theme (Dark on White) */
+body.theme-light {
+  --bg-color: #f6f8fa;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-border: rgba(31, 35, 40, 0.12);
+  --text-primary: #1f2328;
+  --text-secondary: #57606a;
+  --text-muted: #8c959f;
+  
+  --level-0: #ebedf0;
+  --level-1: #afb8c1;
+  --level-2: #6e7681;
+  --level-3: #30363d;
+  --level-4: #161b22;
+  
+  --accent-color: #1f2328;
+  --accent-glow: rgba(31, 35, 40, 0.08);
+  --accent-gradient: linear-gradient(135deg, #57606a 0%, #1f2328 100%);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -296,6 +328,8 @@ body {
 .btn-blue { background-color: #00bfff; }
 .btn-mono { background-color: #afb8c1; }
 .btn-glass { background: linear-gradient(135deg, #ffffff 50%, #161b22 50%); border: 1px solid rgba(255, 255, 255, 0.2); }
+.btn-white { background-color: #ffffff; border: 1px solid rgba(255,255,255,0.4); }
+.btn-light { background: linear-gradient(135deg, #161b22 50%, #ebedf0 50%); border: 1px solid rgba(0,0,0,0.2); }
 
 /* --- Search Section --- */
 .search-section {
@@ -1584,4 +1618,191 @@ body.is-embedded .grid-section {
   border-radius: 12px !important;
   padding: 1.2rem !important;
   box-shadow: none !important;
+}
+
+/* ==========================================================================
+   Grayscale Light Theme Overrides (Dark cells on White background)
+   ========================================================================== */
+body.theme-light {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+}
+
+body.theme-light .card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+body.theme-light .card:hover {
+  border-color: rgba(0, 0, 0, 0.18);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+body.theme-light .hover-lift:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+body.theme-light .search-form .input-group {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.theme-light .search-form .input-group:focus-within {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+body.theme-light .search-form input {
+  color: #1f2328;
+}
+
+body.theme-light .search-form input::placeholder {
+  color: #8c959f;
+}
+
+body.theme-light .submit-btn {
+  background: linear-gradient(135deg, #30363d 0%, #161b22 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+body.theme-light .submit-btn:hover {
+  background: #000000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+body.theme-light .logo-icon {
+  background: linear-gradient(135deg, #30363d 0%, #161b22 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+body.theme-light .logo-text .highlight {
+  background: linear-gradient(135deg, #57606a 0%, #1f2328 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.theme-light .theme-customizer {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+body.theme-light .year-tabs {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+body.theme-light .year-tab-btn.active {
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--accent-color);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.theme-light .grid-cell:hover {
+  box-shadow: 0 0 8px 1px var(--accent-color);
+}
+
+body.theme-light .metric-icon {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #1f2328 !important;
+  box-shadow: none !important;
+}
+
+body.theme-light .insight-bullet {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #1f2328 !important;
+  box-shadow: none !important;
+}
+
+body.theme-light .pulse-status-badge {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #1f2328 !important;
+  box-shadow: none !important;
+}
+
+body.theme-light .chart-bar-track {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+body.theme-light .chart-bar-fill {
+  background: linear-gradient(to top, #8c959f, #161b22);
+  box-shadow: none;
+}
+
+body.theme-light .chart-bar-container:hover .chart-bar-fill {
+  opacity: 0.85;
+}
+
+body.theme-light .insight-item {
+  background: rgba(0, 0, 0, 0.01);
+  border-color: rgba(0, 0, 0, 0.03);
+}
+
+body.theme-light .insight-item:hover {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+body.theme-light .glow-orb.orb-1,
+body.theme-light .glow-orb.orb-2 {
+  background-color: #6e7681;
+  opacity: 0.03;
+}
+
+body.theme-light .skeleton-avatar,
+body.theme-light .skeleton-line,
+body.theme-light .skeleton-calendar,
+body.theme-light .skeleton-metric {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Modal styling in light theme */
+body.theme-light .modal-overlay {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+body.theme-light .copy-input-group {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.theme-light .copy-input-group:focus-within {
+  border-color: #000000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+body.theme-light .copy-input-group input {
+  color: #1f2328;
+}
+
+body.theme-light .copy-btn {
+  background: linear-gradient(135deg, #30363d 0%, #161b22 100%);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+body.theme-light .copy-btn:hover {
+  background: #000000;
+}
+
+body.theme-light .copy-btn.copied {
+  background: linear-gradient(135deg, #26a641 0%, #39d353 100%) !important;
+}
+
+body.theme-light .share-btn {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #1f2328;
+}
+
+body.theme-light .share-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: #1f2328;
+  box-shadow: none;
 }
