@@ -17,7 +17,7 @@
   <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-green">
+<body class="theme-dark">
   
   <div class="background-decorations">
     <div class="glow-orb orb-1"></div>
@@ -37,26 +37,22 @@
         </div>
       </div>
 
-      <!-- Theme Selector -->
-      <div class="theme-customizer">
-        <span class="theme-label"><i class="fa-solid fa-palette"></i> Palette:</span>
-        <div class="theme-options">
-          <button class="theme-btn btn-green active" data-theme="green" title="Classic Green" id="theme-btn-green"></button>
-          <button class="theme-btn btn-purple" data-theme="purple" title="Midnight Purple" id="theme-btn-purple"></button>
-          <button class="theme-btn btn-orange" data-theme="orange" title="Solar Orange" id="theme-btn-orange"></button>
-          <button class="theme-btn btn-blue" data-theme="blue" title="Ocean Blue" id="theme-btn-blue"></button>
-          <button class="theme-btn btn-mono" data-theme="mono" title="Carbon Mono" id="theme-btn-mono"></button>
-          <button class="theme-btn btn-glass" data-theme="glass" title="Glass B&W" id="theme-btn-glass"></button>
-          <button class="theme-btn btn-white" data-theme="white" title="High Contrast White" id="theme-btn-white"></button>
-          <button class="theme-btn btn-light" data-theme="light" title="Grayscale Light (Dark on White)" id="theme-btn-light"></button>
-        </div>
-      </div>
+      <!-- Theme Toggle -->
+      <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle Dark/Light Mode">
+        <i class="fa-solid fa-sun"></i>
+      </button>
     </header>
 
     <!-- Search Section -->
     <section class="search-section card glass">
       <form id="search-form" class="search-form">
         <div class="input-group">
+          <div class="platform-selector">
+            <select id="platform-select">
+              <option value="github" selected>GitHub</option>
+              <option value="leetcode">LeetCode</option>
+            </select>
+          </div>
           <i class="fa-solid fa-user search-icon"></i>
           <input type="text" id="username-input" placeholder="Enter GitHub username (e.g. Demo-For-Test)" required autocomplete="off">
           <button type="submit" id="search-submit-btn" class="submit-btn">
@@ -76,6 +72,12 @@
     <!-- Main Dashboard Grid -->
     <main id="dashboard-content" class="dashboard-content hidden">
       
+      <!-- Rate Limit Warning Banner -->
+      <div id="rate-limit-warning" class="rate-limit-warning card glass hidden">
+        <i class="fa-solid fa-triangle-exclamation warning-icon"></i>
+        <span>GitHub API rate limit reached. Profile stats (followers, repos, stars) may be temporarily blank. Set a <code>GITHUB_TOKEN</code> to fix.</span>
+      </div>
+
       <!-- User Profile Header -->
       <section class="profile-card card glass">
         <div class="profile-layout">
@@ -137,7 +139,6 @@
             0 activities in selected year
           </div>
           <div class="grid-legend">
-            <span>Less</span>
             <div class="legend-cells">
               <div class="legend-cell level-0"></div>
               <div class="legend-cell level-1"></div>
@@ -145,7 +146,6 @@
               <div class="legend-cell level-3"></div>
               <div class="legend-cell level-4"></div>
             </div>
-            <span>More</span>
           </div>
         </div>
       </section>
@@ -153,7 +153,7 @@
       <!-- Key Analytics Metrics Row -->
       <section class="metrics-row">
         <!-- Stat Card 1 -->
-        <div class="metric-card card glass hover-lift">
+        <div class="metric-card card glass hover-lift" data-card-id="total-contributions">
           <div class="metric-icon green-glow">
             <i class="fa-solid fa-layer-group"></i>
           </div>
@@ -165,7 +165,7 @@
         </div>
         
         <!-- Stat Card 2 -->
-        <div class="metric-card card glass hover-lift">
+        <div class="metric-card card glass hover-lift" data-card-id="current-streak">
           <div class="metric-icon purple-glow">
             <i class="fa-solid fa-fire"></i>
           </div>
@@ -177,7 +177,7 @@
         </div>
 
         <!-- Stat Card 3 -->
-        <div class="metric-card card glass hover-lift">
+        <div class="metric-card card glass hover-lift" data-card-id="longest-streak">
           <div class="metric-icon orange-glow">
             <i class="fa-solid fa-trophy"></i>
           </div>
@@ -189,7 +189,7 @@
         </div>
 
         <!-- Stat Card 4 -->
-        <div class="metric-card card glass hover-lift">
+        <div class="metric-card card glass hover-lift" data-card-id="active-ratio">
           <div class="metric-icon blue-glow">
             <i class="fa-solid fa-circle-check"></i>
           </div>
@@ -204,7 +204,7 @@
       <!-- GitHub Pulse Stats Row -->
       <section class="metrics-row github-stats-row">
         <!-- PRs Accepted -->
-        <div class="metric-card card glass hover-lift">
+        <div class="metric-card card glass hover-lift" data-card-id="prs-accepted">
           <div class="metric-icon purple-glow">
             <i class="fa-solid fa-code-pull-request"></i>
           </div>
@@ -216,7 +216,7 @@
         </div>
 
         <!-- Followers -->
-        <div class="metric-card card glass hover-lift">
+        <div class="metric-card card glass hover-lift" data-card-id="followers">
           <div class="metric-icon blue-glow">
             <i class="fa-solid fa-users"></i>
           </div>
@@ -228,7 +228,7 @@
         </div>
 
         <!-- Public Repos -->
-        <div class="metric-card card glass hover-lift">
+        <div class="metric-card card glass hover-lift" data-card-id="public-repos">
           <div class="metric-icon green-glow">
             <i class="fa-solid fa-book-bookmark"></i>
           </div>
@@ -240,7 +240,7 @@
         </div>
 
         <!-- Highest Starred Repo -->
-        <div class="metric-card card glass hover-lift top-repo-card">
+        <div class="metric-card card glass hover-lift top-repo-card" data-card-id="top-repo">
           <div class="metric-icon orange-glow">
             <i class="fa-solid fa-star"></i>
           </div>
@@ -258,7 +258,7 @@
       <!-- Analysis and Charts Section -->
       <section class="analysis-section">
         <!-- Weekly Analysis Bar Chart -->
-        <div class="chart-card card glass">
+        <div class="chart-card card glass hover-lift" data-card-id="weekly-activity">
           <div class="card-header">
             <i class="fa-solid fa-chart-simple text-accent"></i>
             <h3>Day of Week Activity</h3>
@@ -271,7 +271,7 @@
         </div>
 
         <!-- Monthly Breakdown Analysis -->
-        <div class="chart-card card glass">
+        <div class="chart-card card glass hover-lift" data-card-id="monthly-weight">
           <div class="card-header">
             <i class="fa-solid fa-chart-line text-accent"></i>
             <h3>Monthly Contribution Weight</h3>
@@ -284,7 +284,7 @@
         </div>
 
         <!-- Analytics Highlights Card -->
-        <div class="chart-card card glass highlights-card">
+        <div class="chart-card card glass highlights-card hover-lift" data-card-id="pulse-insights">
           <div class="card-header">
             <i class="fa-solid fa-lightbulb text-accent"></i>
             <h3>Pulse Insights</h3>
@@ -314,6 +314,140 @@
           </div>
         </div>
       </section>
+
+      <!-- LeetCode Dashboard Section -->
+      <div id="leetcode-dashboard" class="leetcode-dashboard hidden">
+        <!-- LeetCode Profile Card -->
+        <section class="profile-card card glass">
+          <div class="profile-layout">
+            <img id="lc-user-avatar" src="" alt="LeetCode User Avatar" class="user-avatar">
+            <div class="profile-details">
+              <h2 id="lc-user-name">-</h2>
+              <p class="profile-meta">
+                <a id="lc-user-link" href="#" target="_blank" rel="noopener noreferrer">
+                  <i class="fa-solid fa-code"></i> @<span id="lc-user-username">-</span>
+                </a>
+              </p>
+            </div>
+            <div class="pulse-status-badge">
+              <span class="pulse-dot animate-pulse"></span>
+              <span>Pulse Active</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Total Solved Donut Chart Card -->
+        <section class="solved-section card glass hover-lift" data-lc-card-id="total-solved">
+          <div class="solved-layout">
+            <div class="donut-container">
+              <svg id="lc-donut-chart" viewBox="0 0 200 200" class="donut-svg">
+                <!-- Rendered by JS -->
+              </svg>
+              <div class="donut-center">
+                <div class="donut-numbers">
+                  <span id="lc-solved-count" class="donut-count">0</span>
+                  <span id="lc-total-count" class="donut-total">/0</span>
+                </div>
+                <span class="donut-label"><i class="fa-solid fa-check"></i> Solved</span>
+              </div>
+            </div>
+            <div class="difficulty-breakdown">
+              <div class="diff-card easy-card">
+                <span class="diff-label">Easy</span>
+                <span id="lc-easy-count" class="diff-count">0/0</span>
+              </div>
+              <div class="diff-card medium-card">
+                <span class="diff-label">Med.</span>
+                <span id="lc-medium-count" class="diff-count">0/0</span>
+              </div>
+              <div class="diff-card hard-card">
+                <span class="diff-label">Hard</span>
+                <span id="lc-hard-count" class="diff-count">0/0</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- LeetCode Metrics Row -->
+        <section class="metrics-row">
+          <div class="metric-card card glass hover-lift" data-lc-card-id="contest-rating">
+            <div class="metric-icon"><i class="fa-solid fa-ranking-star"></i></div>
+            <div class="metric-info">
+              <span class="metric-label">Contest Rating</span>
+              <h4 id="lc-contest-rating" class="metric-val">-</h4>
+              <span class="metric-trend" id="lc-global-rank">Global Rank: -</span>
+            </div>
+          </div>
+          <div class="metric-card card glass hover-lift" data-lc-card-id="max-streak">
+            <div class="metric-icon"><i class="fa-solid fa-fire"></i></div>
+            <div class="metric-info">
+              <span class="metric-label">Max Streak</span>
+              <h4 id="lc-max-streak" class="metric-val">0 days</h4>
+              <span class="metric-trend">Maximum submission streak</span>
+            </div>
+          </div>
+          <div class="metric-card card glass hover-lift" data-lc-card-id="reputation">
+            <div class="metric-icon"><i class="fa-solid fa-star"></i></div>
+            <div class="metric-info">
+              <span class="metric-label">Reputation</span>
+              <h4 id="lc-reputation" class="metric-val">0</h4>
+              <span class="metric-trend" id="lc-ranking">Ranking: -</span>
+            </div>
+          </div>
+          <div class="metric-card card glass hover-lift" data-lc-card-id="views">
+            <div class="metric-icon"><i class="fa-solid fa-eye"></i></div>
+            <div class="metric-info">
+              <span class="metric-label">Views</span>
+              <h4 id="lc-views" class="metric-val">0</h4>
+              <span class="metric-trend">Profile views</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="metrics-row">
+          <div class="metric-card card glass hover-lift" data-lc-card-id="solutions">
+            <div class="metric-icon"><i class="fa-solid fa-lightbulb"></i></div>
+            <div class="metric-info">
+              <span class="metric-label">Solutions</span>
+              <h4 id="lc-solutions" class="metric-val">0</h4>
+              <span class="metric-trend">Published solutions</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- LeetCode Submission Calendar -->
+        <section class="grid-section card glass hover-lift" id="lc-calendar-section" data-lc-card-id="submission-calendar">
+          <div class="grid-header">
+            <div class="grid-title">
+              <i class="fa-solid fa-calendar-days text-accent"></i>
+              <h3>Submission Calendar</h3>
+            </div>
+            <!-- LeetCode Year Selector -->
+            <div id="lc-year-tabs" class="year-tabs">
+              <!-- Dynamically populated year tabs -->
+            </div>
+          </div>
+          <div class="grid-viewport-wrapper">
+            <div class="calendar-container">
+              <div id="lc-contributions-grid" class="contributions-grid-wrapper">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+          </div>
+          <div class="grid-footer">
+            <div id="lc-activity-summary" class="activity-summary-text">0 submissions this year</div>
+            <div class="grid-legend">
+              <div class="legend-cells">
+                <div class="legend-cell level-0"></div>
+                <div class="legend-cell level-1"></div>
+                <div class="legend-cell level-2"></div>
+                <div class="legend-cell level-3"></div>
+                <div class="legend-cell level-4"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
 
     <!-- Skeleton Loader (displayed during loading state) -->
@@ -419,6 +553,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Toast container for click-to-copy notifications -->
+  <div id="toast-container" class="toast-container"></div>
 
   <!-- Core Script File -->
   <script src="app.js"></script>
